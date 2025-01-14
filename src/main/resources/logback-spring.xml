@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--引入默认的一些设置-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    
+    <!--<springProperty scope="context" name="logstash.hosts" source="logging.logstash.hosts" defaultValue="127.0.0.1:4560"/>-->
+    <!--<springProperty scope="context" name="logstash.index-name" source="logging.logstash.index-name" defaultValue="logstash-log"/>-->
+    <!---->
+     <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+    <!--web信息-->
+    <logger name="org.springframework.web" level="info"/>
+
+    <!--写入日志到控制台的appender,用默认的,但是要去掉charset,否则windows下tomcat下乱码-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+    <property name="LOG_PATH" value="./logs/log"/>
+    <!--写入日志到文件的appender-->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--日志文件输出的文件名,每天一个文件-->
+            <FileNamePattern>${LOG_PATH}%i.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <maxHistory>30</maxHistory>
+            <MaxFileSize>10MB</MaxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+        <!--日志文件最大的大小-->
+<!--        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+<!--            -->
+<!--        </triggeringPolicy>-->
+    </appender>
+
+    <!--异步到文件-->
+    <appender name="asyncFileAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>500</queueSize>
+        <appender-ref ref="asyncFileAppender"/>
+    </appender>
+
+	<!--<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+		<!--<destination>${logstash.hosts}</destination>-->
+		<!--&lt;!&ndash; encoder is required &ndash;&gt;-->
+		<!--<encoder charset="UTF-8"-->
+			<!--class="net.logstash.logback.encoder.LogstashEncoder">-->
+			<!--&lt;!&ndash; 用户自定义Json字符串，用于向logstash提交额外的自定义属性。可在logstash的input里接收该参数 &ndash;&gt;-->
+			<!--<customFields>{"appName":"${logstash.index-name}"}</customFields>-->
+		<!--</encoder>-->
+	<!--</appender>-->
+
+	<!--<appender name="asyncLogstash" class="ch.qos.logback.classic.AsyncAppender">-->
+		<!--<appender-ref ref="logstash" />-->
+	<!--</appender>-->
+
+    <root level="info">
+         <appender-ref ref="CONSOLE"/>
+         <appender-ref ref="FILE"/>
+         <!--<appender-ref ref="asyncLogstash"/>-->
+     </root>
+    
+</configuration>
