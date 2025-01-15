@@ -7,8 +7,17 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * SaltMD5工具类，用于生成和验证加盐的MD5密码。
+ */
 public class SaltMD5Util {
 
+    /**
+     * 生成普通的MD5密码。
+     *
+     * @param input 要加密的字符串
+     * @return MD5加密后的字符串
+     */
     public static String MD5(String input) {
         MessageDigest md5 = null;
         try {
@@ -35,6 +44,12 @@ public class SaltMD5Util {
         return hexValue.toString();
     }
 
+    /**
+     * 生成加盐的MD5密码。
+     *
+     * @param password 要加密的密码
+     * @return 加盐的MD5密码
+     */
     public static String generateSaltPassword(String password) {
         Random random = new Random();
         // 生成一个16位的随机数，也就是所谓的盐
@@ -62,6 +77,13 @@ public class SaltMD5Util {
         return new String(cs);
     }
 
+    /**
+     * 验证加盐的MD5密码。
+     *
+     * @param password 要验证的密码
+     * @param md5 加盐的MD5密码
+     * @return 是否验证成功
+     */
     public static boolean verifySaltPassword(String password, String md5) {
         // 先从MD5码中取出之前加的盐和加盐后生成的MD5码
         char[] cs1 = new char[32];
@@ -76,6 +98,12 @@ public class SaltMD5Util {
         return Objects.equals(md5Hex(password + salt), new String(cs1));
     }
 
+    /**
+     * 生成MD5码。
+     *
+     * @param src 要加密的字符串
+     * @return MD5加密后的字符串
+     */
     private static String md5Hex(String src) {
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");

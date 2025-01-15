@@ -20,16 +20,18 @@ public class User implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
     /**
-     *
+     * 用户名
      */
     @TableId
     private String username;
     /**
-     *
+     * 密码
      */
     private String password;
     /**
-     *
+     * 用户状态
+     * 0：启用
+     * 1：禁用
      */
     private Integer status;
 }
