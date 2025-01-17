@@ -1,5 +1,6 @@
 package com.plotech.kanban.controller;
 
+import com.plotech.kanban.exception.CommonBaseException;
 import com.plotech.kanban.pojo.vo.TransferDataRequest;
 import com.plotech.kanban.pojo.vo.TransferDataResponse;
 import org.springframework.http.HttpEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -40,7 +42,11 @@ public class DataForwardController {
         // 设置请求头内容类型为JSON
         headers.setContentType(MediaType.valueOf("application/json;charset=UTF-8"));
         HttpEntity<TransferDataRequest> httpEntity = new HttpEntity<>(requestData, headers);
-        // 发送POST请求并返回结果
-        return restTemplate.postForObject(targetUrl, httpEntity, TransferDataResponse.class);
+        try {
+            // 发送POST请求并返回结果
+            return restTemplate.postForObject(targetUrl, httpEntity, TransferDataResponse.class);
+        } catch (HttpServerErrorException e) {
+            return new CommonBaseException(10000, e.getStatusText());
+        }
     }
 }

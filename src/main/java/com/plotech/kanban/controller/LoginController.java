@@ -2,14 +2,21 @@ package com.plotech.kanban.controller;
 
 import com.plotech.kanban.pojo.entity.User;
 import com.plotech.kanban.pojo.vo.R;
+import com.plotech.kanban.pojo.vo.TransferDataRequest;
+import com.plotech.kanban.pojo.vo.TransferDataResponse;
 import com.plotech.kanban.service.UserService;
 import com.plotech.kanban.util.JwtUtil;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,19 +38,6 @@ public class LoginController {
     private JwtUtil jwtUtil;
 
     /**
-     * 注册新用户。
-     *
-     * @param user 要注册的用户信息
-     * @return 注册结果
-     */
-    @PostMapping("/signUp")
-    public R signUp(@RequestBody User user) {
-        // 保存用户信息
-        userService.saveUser(user);
-        return R.ok();
-    }
-
-    /**
      * 用户登录。
      *
      * @param user 用户登录信息
@@ -51,12 +45,12 @@ public class LoginController {
      */
     @PostMapping("/signIn")
     public R signIn(@RequestBody User user) {
-        // 验证用户是否存在
-        userService.existUser(user);
-        Map<String, Object> token = new HashMap<>();
+        userService.authConfirm(user);
+        Map<String, Object> userInfo = new HashMap<>();
         // 将用户信息放入令牌中
-        token.put("token", user);
+        userInfo.put("username",user.getUsername());
+        userInfo.put("signInTime",new Date());
         // 生成JWT令牌
-        return R.ok(jwtUtil.generateJwt(token));
+        return R.ok(jwtUtil.generateJwt(userInfo));
     }
 }

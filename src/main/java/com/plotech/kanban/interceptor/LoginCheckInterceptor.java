@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.plotech.kanban.exception.CommonBaseErrorCode;
 import com.plotech.kanban.pojo.vo.R;
 import com.plotech.kanban.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -13,6 +14,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * 登录检查拦截器，用于检查用户是否登录并验证JWT令牌。
@@ -40,8 +44,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 获取请求URL
         String url = request.getRequestURL().toString();
-        // 如果是登录或注册请求，则直接放行
-        if (url.contains("signIn") || url.contains("signUp")) {
+        // 如果是登录请求，则直接放行
+        if (url.contains("signIn")) {
             return true;
         }
         // 获取请求头中的token

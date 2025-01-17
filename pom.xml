@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.plotech</groupId>
     <artifactId>kanban</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <name>kanban</name>
     <description>kanban</description>
     <url/>
@@ -58,33 +58,6 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
-        <!--sqlite-->
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-        </dependency>
-        <!--jpa-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <!--补齐Hibernate 5.4.32.Final中对方言SQLite不支持的问题-->
-        <dependency>
-            <groupId>com.github.gwenn</groupId>
-            <artifactId>sqlite-dialect</artifactId>
-            <version>0.1.0</version>
-        </dependency>
-        <!--mybatis-plus-->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.2</version>
-        </dependency>
         <!--MD5加密 对铭文信息进行加密操作-->
         <dependency>
             <groupId>commons-codec</groupId>
@@ -128,7 +101,6 @@
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.36</version>
                         </exclude>
                     </excludes>
                 </configuration>
