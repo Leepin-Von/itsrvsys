@@ -2,20 +2,14 @@ package com.plotech.kanban.controller;
 
 import com.plotech.kanban.pojo.entity.User;
 import com.plotech.kanban.pojo.vo.R;
-import com.plotech.kanban.pojo.vo.TransferDataRequest;
-import com.plotech.kanban.pojo.vo.TransferDataResponse;
 import com.plotech.kanban.service.UserService;
 import com.plotech.kanban.util.JwtUtil;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,18 +18,17 @@ import java.util.Map;
  * 登录，用于处理用户登录和注册请求。
  */
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api")
 public class LoginController {
     /**
      * 用户服务实例，用于处理用户相关的业务逻辑。
      */
-    @Resource
-    private UserService userService;
+    private final UserService userService;
     /**
      * JWT工具实例，用于生成和验证JWT令牌。
      */
-    @Resource
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     /**
      * 用户登录。

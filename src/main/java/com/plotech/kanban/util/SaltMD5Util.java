@@ -77,25 +77,40 @@ public class SaltMD5Util {
         return new String(cs);
     }
 
+    private static String getSalt(String md5) {
+        char[] cs = new char[16];
+        for (int i = 0; i < 48; i += 3) {
+            cs[i / 3] = md5.charAt(i + 1);
+        }
+        return new String(cs);
+    }
+
+    /**
+     * 获取加盐加密的MD5中的盐值
+     * @param md5 加盐加密的MD5密码
+     * @return 盐值
+     */
+    public static String extractSalt(String md5){
+        return getSalt(md5);
+    }
+
     /**
      * 验证加盐的MD5密码。
      *
      * @param password 要验证的密码
-     * @param md5 加盐的MD5密码
+     * @param md5      加盐的MD5密码
      * @return 是否验证成功
      */
     public static boolean verifySaltPassword(String password, String md5) {
         // 先从MD5码中取出之前加的盐和加盐后生成的MD5码
-        char[] cs1 = new char[32];
-        char[] cs2 = new char[16];
+        char[] cs = new char[32];
         for (int i = 0; i < 48; i += 3) {
-            cs1[i / 3 * 2] = md5.charAt(i);
-            cs1[i / 3 * 2 + 1] = md5.charAt(i + 2);
-            cs2[i / 3] = md5.charAt(i + 1);
+            cs[i / 3 * 2] = md5.charAt(i);
+            cs[i / 3 * 2 + 1] = md5.charAt(i + 2);
         }
-        String salt = new String(cs2);
+        String salt = getSalt(md5);
         //比较二者是否相同
-        return Objects.equals(md5Hex(password + salt), new String(cs1));
+        return Objects.equals(md5Hex(password + salt), new String(cs));
     }
 
     /**
@@ -113,5 +128,4 @@ public class SaltMD5Util {
             return null;
         }
     }
-
 }

@@ -4,32 +4,27 @@ import com.alibaba.fastjson.JSONObject;
 import com.plotech.kanban.exception.CommonBaseErrorCode;
 import com.plotech.kanban.pojo.vo.R;
 import com.plotech.kanban.util.JwtUtil;
-import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 /**
  * 登录检查拦截器，用于检查用户是否登录并验证JWT令牌。
  */
 @Slf4j
 @Component
+@AllArgsConstructor
 public class LoginCheckInterceptor implements HandlerInterceptor {
 
     /**
      * JWT工具实例，用于解析和验证JWT令牌。
      */
-    @Resource
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     /**
      * 在请求处理之前进行拦截。

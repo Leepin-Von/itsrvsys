@@ -8,21 +8,34 @@ import com.plotech.kanban.pojo.vo.TransferDataResponse;
 import com.plotech.kanban.service.UserService;
 import com.plotech.kanban.util.SaltMD5Util;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Resource
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    @Value("${current.env}")
+    private String currentEnv;
+    @Value("${dev.api}")
+    private String devApi;
+    @Value("${prod.api}")
+    private String prodApi;
+
+    public UserServiceImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    private String getTargetUrl() {
+        return "dev".equalsIgnoreCase(currentEnv) ? devApi : prodApi;
+    }
 
     @Override
     public boolean authConfirm(User user) {
@@ -33,7 +46,7 @@ public class UserServiceImpl implements UserService {
         // 对密码进行加盐MD5加密处理
         user.setPassword(SaltMD5Util.generateSaltPassword(user.getPassword().toUpperCase()));
         // 目标路径
-        String targetUrl = "http://10.2.85.30:6666/ERP/MES/TServerMethods1/ISSAPIFun";
+        String targetUrl = getTargetUrl();
         // 请求体
         TransferDataRequest request = new TransferDataRequest();
         request.setDocType("ChkUserPermissions");
