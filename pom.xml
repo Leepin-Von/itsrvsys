@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.6</version>
+        <version>3.1.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.plotech</groupId>
@@ -27,7 +27,7 @@
         <url/>
     </scm>
     <properties>
-        <java.version>8</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -74,6 +74,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.7</version>
+        </dependency>
+        <!--hutool-crypto-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+            <version>5.8.35</version>
         </dependency>
 
     </dependencies>
