@@ -1,6 +1,7 @@
 package com.plotech.kanban.config;
 
 import com.plotech.kanban.interceptor.LoginCheckInterceptor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -14,13 +15,13 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Configuration
+@AllArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
     /**
      * 登录检查拦截器。
      */
-    @Resource
-    private LoginCheckInterceptor loginCheckInterceptor;
+    private final LoginCheckInterceptor loginCheckInterceptor;
 
     /**
      * 添加跨域资源共享（CORS）映射。

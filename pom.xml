@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.plotech</groupId>
     <artifactId>kanban</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <name>kanban</name>
     <description>kanban</description>
     <url/>
@@ -74,6 +74,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.7</version>
+        </dependency>
+        <!--hutools-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+            <version>5.8.35</version>
         </dependency>
 
     </dependencies>

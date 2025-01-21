@@ -5,6 +5,7 @@ import com.plotech.kanban.exception.CommonBaseErrorCode;
 import com.plotech.kanban.pojo.vo.R;
 import com.plotech.kanban.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -23,13 +24,13 @@ import java.util.Date;
  */
 @Slf4j
 @Component
+@AllArgsConstructor
 public class LoginCheckInterceptor implements HandlerInterceptor {
 
     /**
      * JWT工具实例，用于解析和验证JWT令牌。
      */
-    @Resource
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     /**
      * 在请求处理之前进行拦截。
