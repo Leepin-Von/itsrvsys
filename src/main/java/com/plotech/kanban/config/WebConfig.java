@@ -52,6 +52,6 @@ public class WebConfig implements WebMvcConfigurer {
                 // 添加拦截路径
                 .addPathPatterns("/**")
                 // 排除登录和注册路径
-                .excludePathPatterns("/api/signIn", "/api/signUp");
+                .excludePathPatterns("/api/signIn", "/api/signUp", "/jmreport/**", "/drag/**");
     }
 }

@@ -15,9 +15,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Scanner;
 
 /**
  * 登录检查拦截器，用于检查用户是否登录并验证JWT令牌。
@@ -49,8 +53,18 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         if (url.contains("signIn")) {
             return true;
         }
+        // 积木报表内置了Interceptor，由它自己处理，这里就直接放行
+        if (url.contains("jmreport")) {
+            return true;
+        }
+        // 积木BI同上
+        if (url.contains("drag") || url.contains("jimubi")) {
+            return true;
+        }
         // 获取请求头中的token
         String token = request.getHeader("token");
+        log.info("请求URL --> 【{}】", url);
+        log.info("token == null? --> 【{}】", token == null);
         // 如果token为空，则返回401未授权
         if (!StringUtils.hasLength(token)) {
             response.setContentType("application/json; charset=UTF-8");
