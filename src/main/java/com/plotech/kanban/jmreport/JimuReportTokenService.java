@@ -44,6 +44,17 @@ public class JimuReportTokenService implements JmReportTokenServiceI {
     }
 
     @Override
+    public String[] getPermissions(String s) {
+        if (getUsername(s).equals("ADMIN")) {
+            log.info("用户名为ADMIN, 获得积木报表的所有权限");
+            return new String[]{"drag:datasource:testConnection", "onl:drag:clear:recovery", "drag:analysis:sql", "drag:design:getTotalData"};
+        } else {
+            log.info("用户名不为ADMIN, 获得积木报表的普通权限");
+            return null;
+        }
+    }
+
+    @Override
     public Boolean verifyToken(String s) {
         return !jwtUtil.parseJwt(s).isEmpty();
     }

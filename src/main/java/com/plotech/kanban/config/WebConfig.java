@@ -51,7 +51,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginCheckInterceptor)
                 // 添加拦截路径
                 .addPathPatterns("/**")
-                // 排除登录和注册路径
-                .excludePathPatterns("/api/signIn", "/api/signUp", "/jmreport/**", "/drag/**");
+                // 排除登录和注册路径，还有积木报表相关的路径
+                .excludePathPatterns("/api/signIn", "/jmreport/**", "/drag/**", "/jimubi/**");
     }
 }

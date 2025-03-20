@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.plotech.kanban.exception.CommonBaseErrorCode;
 import com.plotech.kanban.pojo.vo.R;
 import com.plotech.kanban.util.JwtUtil;
-import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,16 +11,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Scanner;
 
 /**
  * 登录检查拦截器，用于检查用户是否登录并验证JWT令牌。

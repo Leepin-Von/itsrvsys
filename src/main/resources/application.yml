@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: kanban
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/jmreport?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: acmetech
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: plotechnt
+    timeout: 5000
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+  servlet:
+    multipart:
+      max-file-size: 5MB
+
+server:
+  port: 8528
+  tomcat:
+    max-swallow-size: 50MB
+
+minidao:
+  base-package: org.jeecg.modules.jmreport.*,org.jeecg.modules.drag.*
+  type: mysql
+
+logging:
+  level:
+    org.jeecg.modules.jmreport: debug
+
+jeecg:
+  uploadType: local
+  path:
+    upload: /jmreport/upload
+  jmreport:
+    firewall:
+      lowCodeMode: prod #dev/prod/prodsf
+      apiDsIpWhite:
+        - 10.2.1.253
+        - 127.0.0.1
+        - 10.2.32.59
+      interval: 5000
+    pageSize:
+      - 1
+      - 10
+      - 20
+      - 30
+
+minio:
+  endpoint: http://127.0.0.1:8529
+  bucketName: base-bucket
+  accessKey: admin # P8qVWlrkHPUAEG9nAbxB
+  secretKey: 513andsm # TVibk4HRNpiFPUepvD9YffBJfxSX5jo79wU4c8Nb
+
+com:
+  plotech:
+    token:
+      key: plotech
+      expire: 14400000
+
+current:
+  env: prod
+dev:
+  api: http://10.2.85.30:6666/ERP/MES/TServerMethods1/ISSAPIFun
+prod:
+  api: http://10.2.85.30:9001/ERP/MES/TServerMethods1/ISSAPIFun
