@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.plotech.kanban.config.MinIOConfig;
 import com.plotech.kanban.exception.CommonBaseErrorCode;
 import com.plotech.kanban.exception.CommonBaseException;
+import com.plotech.kanban.pojo.entity.FileMetadata;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Bucket;
@@ -131,18 +132,27 @@ public class MinIOUtil {
      * 上传文件
      *
      * @param file MultipartFile对象，要上传的文件
-     * @return MinIO中的存储的文件名
+     * @return FileMetadata对象
      */
-    public String uploadFile(MultipartFile file) {
+    public FileMetadata uploadFile(MultipartFile file, String uploader) {
+        FileMetadata fileMetadata = new FileMetadata();
+        fileMetadata.setUploader(uploader);
         String originalFileName = file.getOriginalFilename();
+        fileMetadata.setOriginalFileName(originalFileName);
         if (!StringUtils.hasText(originalFileName)) {
             throw new CommonBaseException(CommonBaseErrorCode.FILE_IS_BLANK);
         }
         int fileTypeIndex = originalFileName.lastIndexOf(".");
         String fileType = originalFileName.substring(fileTypeIndex);
+        fileMetadata.setFileType(fileType);
         String fileName = originalFileName.substring(fileTypeIndex - 1);
         String md5FileName = DigestUtils.md5DigestAsHex(fileName.getBytes());
-        String objectName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM/dd")) + "/" + md5FileName + fileType;
+        fileMetadata.setId(md5FileName);
+        LocalDateTime now = LocalDateTime.now();
+        fileMetadata.setBuildDate(now);
+        fileMetadata.setLastModifyDate(now);
+        String objectName = now.format(DateTimeFormatter.ofPattern("yyyy-MM/dd")) + "/" + md5FileName + fileType;
+        fileMetadata.setMinIOUrl(prop.getEndpoint() + "/" + prop.getBucketName() + "/" + objectName);
         try {
             PutObjectArgs objectArgs = PutObjectArgs.builder()
                     .bucket(prop.getBucketName())
@@ -156,7 +166,7 @@ public class MinIOUtil {
             log.error("上传文件【{}】到MinIO时出现错误，错误信息：{}", originalFileName, e.getMessage());
             throw new CommonBaseException(CommonBaseErrorCode.FILE_UPLOAD_FAIL);
         }
-        return objectName;
+        return fileMetadata;
     }
 
     /**

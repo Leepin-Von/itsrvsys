@@ -2,6 +2,7 @@ package com.plotech.kanban.controller;
 
 import com.plotech.kanban.config.MinIOConfig;
 import com.plotech.kanban.pojo.vo.R;
+import com.plotech.kanban.service.FileMetadataService;
 import com.plotech.kanban.util.MinIOUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class MinIOController {
 
     private final MinIOUtil minIOUtil;
     private final MinIOConfig prop;
+    private final FileMetadataService fileMetadataService;
 
     @GetMapping("/bucketExists")
     public R bucketExists(@RequestParam String bucketName) {
@@ -40,8 +42,8 @@ public class MinIOController {
     }
 
     @PostMapping("/upload")
-    public R uploadFile(@RequestParam("file") MultipartFile file) {
-        return R.ok().put("url", prop.getEndpoint() + "/" + prop.getBucketName() + "/" + minIOUtil.uploadFile(file));
+    public R uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("uploader") String uploader) {
+        return R.ok().put("url", fileMetadataService.saveOrUpdate(file, uploader).getMinIOUrl());
     }
 
     @GetMapping("/download")

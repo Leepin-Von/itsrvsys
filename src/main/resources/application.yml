@@ -2,10 +2,36 @@ spring:
   application:
     name: kanban
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/jmreport?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
-    username: root
-    password: acmetech
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    dynamic:
+      primary: mysql
+      strict: false
+      datasource:
+        mssql:
+          driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+          url: jdbc:sqlserver://10.2.81.1:1433;DatabaseName=PLOTECHNT;trustServerCertificate=true;encrypt=false;Timezone=GMT+8
+          username: acmetech
+          password: acmetech
+          druid:
+            initial-size: 5
+            max-active: 20
+            min-idle: 5
+            max-wait: 60000
+            min-evictable-idle-time-millis: 30000
+            max-evictable-idle-time-millis: 30000
+            time-between-eviction-runs-millis: 60000
+        mysql:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/jmreport?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: acmetech
+          druid:
+            initial-size: 5
+            max-active: 20
+            min-idle: 5
+            max-wait: 60000
+            min-evictable-idle-time-millis: 30000
+            max-evictable-idle-time-millis: 30000
+            time-between-eviction-runs-millis: 60000
   redis:
     database: 0
     host: 127.0.0.1
@@ -26,6 +52,19 @@ server:
   port: 8528
   tomcat:
     max-swallow-size: 50MB
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    aggressive-lazy-loading: true
+    multiple-result-sets-enabled: true
 
 minidao:
   base-package: org.jeecg.modules.jmreport.*,org.jeecg.modules.drag.*

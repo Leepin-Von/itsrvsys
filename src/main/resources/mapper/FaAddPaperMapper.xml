@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plotech.kanban.mapper.FaAddPaperMapper">
+    <resultMap id="BaseResultMap" type="com.plotech.kanban.pojo.entity.FaAddPaper">
+        <result column="PaperNo" property="paperNo" jdbcType="VARCHAR"/>
+        <result column="UnitName" property="unitName" jdbcType="VARCHAR"/>
+        <result column="Title" property="title" jdbcType="VARCHAR"/>
+        <result column="PaperDate" property="paperDate" jdbcType="TIMESTAMP"/>
+        <result column="FAName" property="faName" jdbcType="VARCHAR"/>
+        <result column="ItemSpec" property="itemSpec" jdbcType="VARCHAR"/>
+        <result column="CustUnitName" property="custUnitName" jdbcType="VARCHAR"/>
+        <result column="Qnty" property="qnty" jdbcType="DOUBLE"/>
+        <result column="UnitPrice" property="unitPrice" jdbcType="DOUBLE"/>
+        <result column="SubTotal" property="subTotal" jdbcType="DOUBLE"/>
+        <result column="BuildDate" property="buildDate" jdbcType="TIMESTAMP"/>
+        <result column="FAID" property="faId" jdbcType="VARCHAR"/>
+        <result column="Item" property="item" jdbcType="INTEGER"/>
+        <result column="CerNo" property="cerNo" jdbcType="VARCHAR"/>
+        <result column="Notes" property="notes" jdbcType="VARCHAR"/>
+        <result column="Finished" property="finished" jdbcType="INTEGER"/>
+        <result column="IsStockIn" property="isStockIn" jdbcType="INTEGER"/>
+        <result column="SourceNo" property="sourceNo" jdbcType="VARCHAR"/>
+        <result column="SourceItem" property="sourceItem" jdbcType="INTEGER" />
+        <result column="IsMain" property="isMain" jdbcType="VARCHAR" />
+        <result column="IsLaw" property="isLaw" jdbcType="VARCHAR" />
+        <result column="EmpName" property="empName" jdbcType="VARCHAR" />
+    </resultMap>
+    <select id="execFaAddPaper" statementType="CALLABLE" resultMap="BaseResultMap">
+        {call FA_AddPaper(#{paperNo, mode=IN, jdbcType=VARCHAR})}
+    </select>
+</mapper>
