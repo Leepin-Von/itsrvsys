@@ -8,7 +8,7 @@ spring:
       datasource:
         mssql:
           driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-          url: jdbc:sqlserver://10.2.81.1:1433;DatabaseName=PLOTECHNT;trustServerCertificate=true;encrypt=false;Timezone=GMT+8
+          url: jdbc:sqlserver://10.2.72.10:1433;DatabaseName=PLOTECHNT;trustServerCertificate=true;encrypt=false;Timezone=GMT+8
           username: acmetech
           password: acmetech
           druid:
@@ -21,9 +21,9 @@ spring:
             time-between-eviction-runs-millis: 60000
         mysql:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/jmreport?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+          url: jdbc:mysql://10.2.85.31:3306/jmreport?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
           username: root
-          password: acmetech
+          password: P@ssw0rd! #acmetech #Local MySQL
           druid:
             initial-size: 5
             max-active: 20
@@ -105,7 +105,7 @@ com:
       expire: 14400000
 
 current:
-  env: prod
+  env: dev #dev/prod
 dev:
   api: http://10.2.85.30:6666/ERP/MES/TServerMethods1/ISSAPIFun
 prod:

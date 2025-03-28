@@ -40,7 +40,7 @@ public class JimuReportTokenService implements JmReportTokenServiceI {
 
     @Override
     public String[] getRoles(String s) {
-        return new String[]{"admin", "lowdeveloper", "dbadeveloper", "user"};
+        return new String[]{"admin", "lowdeveloper", "dbadeveloper"};
     }
 
     @Override

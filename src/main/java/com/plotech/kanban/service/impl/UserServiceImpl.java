@@ -7,6 +7,7 @@ import com.plotech.kanban.pojo.entity.User;
 import com.plotech.kanban.pojo.vo.TransferDataRequest;
 import com.plotech.kanban.pojo.vo.TransferDataResponse;
 import com.plotech.kanban.service.UserService;
+import com.plotech.kanban.util.SaltUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -33,9 +34,11 @@ public class UserServiceImpl implements UserService {
     private String devApi;
     @Value("${prod.api}")
     private String prodApi;
+    private final SaltUtil saltUtil;
 
-    public UserServiceImpl(RestTemplate restTemplate) {
+    public UserServiceImpl(RestTemplate restTemplate, SaltUtil saltUtil) {
         this.restTemplate = restTemplate;
+        this.saltUtil = saltUtil;
     }
 
     private String getTargetUrl() {
@@ -48,18 +51,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean authConfirm(User user) {
-        Random random = new Random();
-        // 生成一个16位的随机数
-        StringBuilder stringBuilder = new StringBuilder(16);
-        stringBuilder.append(random.nextInt(99999999)).append(random.nextInt(99999999));
-        int len = stringBuilder.length();
-        if (len < 16) {
-            for (int i = 0; i < 16 - len; i++) {
-                stringBuilder.append("0");
-            }
-        }
         // 生成盐
-        String salt = stringBuilder.toString();
+        String salt = saltUtil.generateSalt();
         // 对密码进行加盐MD5加密处理
         String password = user.getPassword();
         if (StringUtils.hasText(password)) {
