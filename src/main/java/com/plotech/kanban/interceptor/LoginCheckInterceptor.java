@@ -64,9 +64,6 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             response.getWriter().write(noPermission);
             return false;
         }
-        if ("reset".equals(token)) { // 忘记密码后重置密码的token
-            return true;
-        }
         try {
             // 解析JWT令牌
             jwtUtil.parseJwt(token);
