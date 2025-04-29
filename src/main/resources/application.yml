@@ -75,9 +75,14 @@ logging:
     org.jeecg.modules.jmreport: debug
 
 jeecg:
-  uploadType: local
+  uploadType: minio #local/minio
   path:
-    upload: /jmreport/upload
+    upload: ./jmreport/upload
+  minio:
+    minio_url: http://10.2.85.19:8529
+    minio_name: admin
+    minio_pass: 513andsm
+    bucketName: base-bucket
   jmreport:
     firewall:
       lowCodeMode: prod #dev/prod/prodsf
@@ -93,7 +98,7 @@ jeecg:
       - 30
 
 minio:
-  endpoint: http://127.0.0.1:8529
+  endpoint: http://10.2.1.253:8529
   bucketName: base-bucket
   accessKey: admin # P8qVWlrkHPUAEG9nAbxB
   secretKey: 513andsm # TVibk4HRNpiFPUepvD9YffBJfxSX5jo79wU4c8Nb
