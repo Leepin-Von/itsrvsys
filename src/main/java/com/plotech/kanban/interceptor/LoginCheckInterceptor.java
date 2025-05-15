@@ -53,7 +53,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return true;
         }
         if(url.contains("approval")) {
-            log.info("请求地址：{}",request.getRemoteAddr());
+            return true;
         }
         // 获取请求头中的token
         String token = request.getHeader("token");
