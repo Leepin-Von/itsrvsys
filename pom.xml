@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.plotech</groupId>
     <artifactId>kanban</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <name>kanban</name>
     <description>kanban</description>
     <url/>
