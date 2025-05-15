@@ -67,7 +67,7 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
-        <!--MD5加密 对铭文信息进行加密操作-->
+        <!--MD5加密 对明文信息进行加密操作-->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>

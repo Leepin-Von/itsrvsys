@@ -110,7 +110,7 @@ com:
       expire: 14400000
 
 current:
-  env: prod #dev/prod
+  env: dev #dev/prod
 dev:
   api: http://10.2.85.30:6666/ERP/MES/TServerMethods1/ISSAPIFun
 prod:
