@@ -3,11 +3,93 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plotech.kanban.mapper.FloPaperRouteMapper">
-    <select id="nonAllowPaper" statementType="CALLABLE" resultType="com.plotech.kanban.pojo.dto.FloPaperRouteDTO">
+    <select id="callForNonAllowPaper" statementType="CALLABLE"
+            resultType="com.plotech.kanban.pojo.dto.FloPaperRouteDTO">
         {CALL ERP_WEB_NonConfirm}
     </select>
     <select id="getEmpId" resultType="java.lang.String">
-        SELECT EmpId FROM EmpBas(NOLOCK)
+        SELECT EmpId
+        FROM EmpBas (NOLOCK)
         WHERE EmpName = #{empName}
+    </select>
+    <select id="isEmpIdExist" resultType="java.lang.String">
+        SELECT EmpId
+        FROM EmpBas (NOLOCK)
+        WHERE EmpId = #{empId}
+          AND outDate IS NULL
+    </select>
+    <select id="queryByPaperNo" resultType="com.plotech.kanban.pojo.entity.FloPaperRoute">
+        SELECT SystemId,
+               PaperNo,
+               FlowId,
+               SerialNo,
+               SteptType,
+               SteptCode,
+               SteptNote,
+               IsConfirm,
+               comment,
+               ConfirmDate,
+               ConfirmEmpId,
+               Announce,
+               IsEmail2Agent,
+               IsEmail2EndUser,
+               SteptKind
+        FROM FLO_PaperRoute (NOLOCK)
+        WHERE PaperNo = #{paperNo}
+    </select>
+    <select id="queryByLogicPK" resultType="com.plotech.kanban.pojo.entity.FloPaperRoute">
+        SELECT *
+        FROM FLO_PaperRoute (NOLOCK)
+        WHERE SystemId = #{systemId}
+          AND PaperNo = #{paperNo}
+          AND FlowId = #{flowId}
+          AND SerialNo = #{serialNo}
+    </select>
+    <select id="queryByFlowId" resultType="com.plotech.kanban.pojo.dto.FloConfig">
+        SELECT ServerName, DataBaseName
+        FROM FLO_Config (NOLOCK)
+        WHERE FlowId = #{flowId}
+    </select>
+    <select id="querySpNameS" resultType="com.plotech.kanban.pojo.dto.FloStdRoute">
+        SELECT ConfirmProcedure=ISNULL(t1.SPName_Confirm, ''), NonConfirmProcedure=ISNULL(t1.SPName_NonConfirm, '')
+        FROM FLO_StdRoute t1 (NOLOCK),
+             FLO_PaperRoute t2 (NOLOCK)
+        WHERE t2.PaperNo = #{paperNo}
+          AND t1.SystemId = t2.SystemId
+          AND t1.FlowId = t2.FlowId
+          AND t2.SerialNo = #{serialNo}
+          AND t1.SerialNo = t2.Eo_SerialNo
+    </select>
+    <select id="callProcedure" statementType="CALLABLE">
+        <![CDATA[
+        SET XACT_ABORT ON;
+        EXEC ${spName} #{paperNo, mode=IN, jdbcType=VARCHAR};
+        SET XACT_ABORT OFF;
+        ]]>
+    </select>
+    <select id="getSerialNo" resultType="java.lang.Integer">
+        SELECT SerialNo
+        FROM V_FLO_Stept_Final_SerialNo (NOLOCK)
+        WHERE PaperNo = #{paperNo}
+    </select>
+    <select id="querySpNameC" resultType="com.plotech.kanban.pojo.dto.FloConfig">
+        SELECT ConfirmProcedure=ISNULL(SPName_Confirm, ''), NonConfirmProcedure=ISNULL(SPName_NonConfirm, '')
+        FROM FLO_Config (NOLOCK)
+        WHERE FlowId = #{flowId}
+    </select>
+    <select id="doReturn" statementType="CALLABLE">
+        {CALL FLO_PaperReject(#{paperNo,mode=IN,jdbcType=VARCHAR}, #{item,mode=IN,jdbcType=INTEGER},
+                              #{groupType,mode=IN,jdbcType=INTEGER}, #{confirmNo,mode=IN,jdbcType=INTEGER})}
+    </select>
+    <select id="callFloRejectMail" statementType="CALLABLE">
+        {CALL FLO_RejectMail(#{paperNo,mode=IN,jdbcType=VARCHAR},
+                                  #{serialNo,mode=IN,jdbcType=INTEGER},
+                                  #{groupType,mode=IN,jdbcType=INTEGER},
+                                  #{confirmNo,mode=IN,jdbcType=INTEGER},
+                                  #{confirmEmpId,mode=IN,jdbcType=VARCHAR},
+                                  #{notes,mode=IN,jdbcType=VARCHAR})}
+    </select>
+    <select id="callFloSearchNonConfirm" resultType="com.plotech.kanban.pojo.entity.FloSearchNonConfirm">
+        {call FLO_Search_NonConfirm(#{empId,mode=IN,jdbcType=VARCHAR})}
     </select>
 </mapper>

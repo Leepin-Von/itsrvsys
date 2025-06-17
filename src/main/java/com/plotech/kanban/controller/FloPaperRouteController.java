@@ -1,7 +1,8 @@
 package com.plotech.kanban.controller;
 
-import com.plotech.kanban.service.FloPaperRouteService;
+import com.plotech.kanban.pojo.dto.RunFlowRequestBody;
 import com.plotech.kanban.pojo.vo.R;
+import com.plotech.kanban.service.FloPaperRouteService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,13 +11,19 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/approval")
 public class FloPaperRouteController {
     private final FloPaperRouteService floPaperRouteService;
 
-    @GetMapping("/approval/{paperNo}")
+    @GetMapping("/{paperNo}")
     public R getNonConfirm(@PathVariable String paperNo) {
         HashMap<String, String> permitEmp = floPaperRouteService.getPermitEmp(paperNo);
         return R.ok(permitEmp);
+    }
+
+    @PostMapping("/runFlow")
+    public R runFlow(@RequestBody RunFlowRequestBody requestBody) {
+        floPaperRouteService.runFlow(requestBody.getTop(), requestBody.getPaperNo());
+        return R.ok();
     }
 }

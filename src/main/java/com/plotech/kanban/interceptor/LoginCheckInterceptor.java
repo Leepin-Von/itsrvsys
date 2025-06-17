@@ -52,9 +52,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         if (url.contains("drag") || url.contains("jimubi")) {
             return true;
         }
-        if(url.contains("approval")) {
-            return true;
-        }
+//        if(url.contains("approval")) {
+//            return true;
+//        }
         // 获取请求头中的token
         String token = request.getHeader("token");
         log.info("请求URL --> 【{}】", url);

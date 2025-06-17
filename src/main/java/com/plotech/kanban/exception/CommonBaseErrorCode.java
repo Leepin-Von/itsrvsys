@@ -19,7 +19,8 @@ public enum CommonBaseErrorCode {
     FILE_DOWNLOAD_FAIL(30000, "下载文件失败"),
     IMAGE_PREVIEW_FAIL(30000, "图片预览失败"),
     // 40000 - 数据库相关
-    SAVE_OR_UPDATE_FAIL(40000, "插入或更新数据失败"),
+    SAVE_FAIL(40000, "插入数据失败，请联系系统管理员"),
+    UPDATE_FAIL(40000, "更新数据失败，请联系系统管理员"),
     NO_PERMIT_EMPLOYEE(40000, "该单据无可签核的人员"),
     NO_DATA(40000, "查无数据");
 

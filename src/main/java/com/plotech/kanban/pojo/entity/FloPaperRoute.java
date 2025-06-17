@@ -37,7 +37,7 @@ public class FloPaperRoute implements Serializable {
 
     private String comment;
 
-    private LocalDateTime confirmDate;
+    private String confirmDate;
 
     private String confirmEmpId;
 
@@ -57,7 +57,8 @@ public class FloPaperRoute implements Serializable {
 
     private Integer signType;
 
-//    private Integer eoSerialno;
+    @TableField("Eo_SerialNo")
+    private Integer eoSerialno;
 
     private Integer isCheck;
 

@@ -90,6 +90,7 @@ jeecg:
         - 10.2.1.253
         - 127.0.0.1
         - 10.2.32.59
+        - 10.2.85.30
       interval: 5000
     pageSize:
       - 1
@@ -110,7 +111,7 @@ com:
       expire: 14400000
 
 current:
-  env: dev #dev/prod
+  env: prod #dev/prod
 dev:
   api: http://10.2.85.30:6666/ERP/MES/TServerMethods1/ISSAPIFun
 prod:
