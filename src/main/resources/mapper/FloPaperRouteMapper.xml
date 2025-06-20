@@ -8,7 +8,7 @@
         {CALL ERP_WEB_NonConfirm}
     </select>
     <select id="getEmpId" resultType="java.lang.String">
-        SELECT EmpId
+        SELECT EmpId = RTRIM(EmpId)
         FROM EmpBas (NOLOCK)
         WHERE EmpName = #{empName}
     </select>

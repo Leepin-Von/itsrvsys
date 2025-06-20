@@ -4,6 +4,7 @@ import com.plotech.kanban.pojo.dto.ApprovalCenterTop;
 import com.plotech.kanban.pojo.entity.FloPaperRoute;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -12,6 +13,6 @@ import java.util.HashMap;
 * @createDate 2025-05-09 11:11:56
 */
 public interface FloPaperRouteService extends IService<FloPaperRoute> {
-    HashMap<String, String> getPermitEmp(String paperNo);
+    ArrayList<String> getPermitEmp(String paperNo);
     void runFlow(ApprovalCenterTop top, String paperNo);
 }

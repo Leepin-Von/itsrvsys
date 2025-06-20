@@ -36,7 +36,7 @@ public class FloPaperRouteServiceImpl extends ServiceImpl<FloPaperRouteMapper, F
     private final FloPaperRouteMapper floPaperRouteMapper;
 
     @Override
-    public HashMap<String, String> getPermitEmp(String paperNo) {
+    public ArrayList<String> getPermitEmp(String paperNo) {
         ArrayList<FloPaperRouteDTO> paperRouteDTOs = floPaperRouteMapper.callForNonAllowPaper();
         if (CollectionUtils.isEmpty(paperRouteDTOs)) {
             throw new CommonBaseException(CommonBaseErrorCode.NO_DATA);
@@ -49,18 +49,18 @@ public class FloPaperRouteServiceImpl extends ServiceImpl<FloPaperRouteMapper, F
         if (permitEmpNames == null) {
             throw new CommonBaseException(CommonBaseErrorCode.NO_PERMIT_EMPLOYEE);
         } else {
-            HashMap<String, String> permitEmpMap = new HashMap<>();
+            ArrayList<String> permitEmps = new ArrayList<>();
             if (permitEmpNames.contains("、")) {
                 String[] permitEmpNameArr = permitEmpNames.split("、");
                 for (String permitEmpName : permitEmpNameArr) {
                     String empId = floPaperRouteMapper.getEmpId(permitEmpName);
-                    permitEmpMap.put(empId, permitEmpName);
+                    permitEmps.add(empId);
                 }
             } else {
                 String empId = floPaperRouteMapper.getEmpId(permitEmpNames);
-                permitEmpMap.put(empId, permitEmpNames);
+                permitEmps.add(empId);
             }
-            return permitEmpMap;
+            return permitEmps;
         }
     }
 

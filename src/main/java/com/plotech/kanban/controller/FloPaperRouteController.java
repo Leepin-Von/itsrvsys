@@ -6,6 +6,7 @@ import com.plotech.kanban.service.FloPaperRouteService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class FloPaperRouteController {
 
     @GetMapping("/{paperNo}")
     public R getNonConfirm(@PathVariable String paperNo) {
-        HashMap<String, String> permitEmp = floPaperRouteService.getPermitEmp(paperNo);
+        ArrayList<String> permitEmp = floPaperRouteService.getPermitEmp(paperNo);
         return R.ok(permitEmp);
     }
 
