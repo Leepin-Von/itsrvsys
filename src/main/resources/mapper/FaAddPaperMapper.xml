@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.plotech.kanban.mapper.FaAddPaperMapper">
+<mapper namespace="com.plotech.itsrvsys.mapper.FaAddPaperMapper">
     <resultMap id="BaseResultMap" type="com.plotech.itsrvsys.pojo.entity.FaAddPaper">
         <result column="PaperNo" property="paperNo" jdbcType="VARCHAR"/>
         <result column="UnitName" property="unitName" jdbcType="VARCHAR"/>

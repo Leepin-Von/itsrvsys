@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.plotech</groupId>
     <artifactId>itsrvsys</artifactId>
-    <version>0.1.7</version>
+    <version>0.2.0</version>
     <name>itsrvsys</name>
     <description>itsrvsys</description>
     <url/>
