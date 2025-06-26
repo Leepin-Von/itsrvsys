@@ -1,0 +1,61 @@
+package com.plotech.itsrvsys.pojo.entity;
+
+import lombok.Data;
+
+@Data
+public class PRptPre {
+    private String preNum;
+    private String preUnit;
+    private String preDate;
+    private String whoInput;
+    private String whoInputName;
+    private Integer status;
+    private String receiveDate;
+    private String cUnit;
+    private String cStatus;
+    private String flo_memo;
+    private String preNo;
+    private String fromTime;
+    private String toTime;
+    private Integer preHr;
+    private String empId;
+    private String name;
+    private String presentId;
+    private String presentName;
+    private String preReason;
+    private String preTmp;
+    private Double p1;
+    private Double p2;
+    private Double p3;
+    private Double p4;
+    private Double p5;
+    private Double p6;
+    private Double p7;
+    private Double p8;
+    private Double p9;
+    private Double p10;
+    private Double canFree;
+    private String activeDate;
+    private String position;
+    private String bef_p1_date;
+    private Double bef_p1_hr;
+    private String bef_p2_date;
+    private Double bef_p2_hr;
+    private String bef_p3_date;
+    private Double bef_p3_hr;
+    private String bef_p4_date;
+    private Double bef_p4_hr;
+    private String bef_p5_date;
+    private Double bef_p5_hr;
+    private String bef_p6_date;
+    private Double bef_p6_hr;
+    private String bef_p7_date;
+    private Double bef_p7_hr;
+    private String bef_p8_date;
+    private Double bef_p8_hr;
+    private String bef_p9_date;
+    private Double bef_p9_hr;
+    private String bef_p10_date;
+    private Double bef_p10_hr;
+    private String fullName;
+}

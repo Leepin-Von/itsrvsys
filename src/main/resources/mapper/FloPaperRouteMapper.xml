@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plotech.kanban.mapper.FloPaperRouteMapper">
     <select id="callForNonAllowPaper" statementType="CALLABLE"
-            resultType="com.plotech.kanban.pojo.dto.FloPaperRouteDTO">
+            resultType="com.plotech.itsrvsys.pojo.dto.FloPaperRouteDTO">
         {CALL ERP_WEB_NonConfirm}
     </select>
     <select id="getEmpId" resultType="java.lang.String">
@@ -18,7 +18,7 @@
         WHERE EmpId = #{empId}
           AND outDate IS NULL
     </select>
-    <select id="queryByPaperNo" resultType="com.plotech.kanban.pojo.entity.FloPaperRoute">
+    <select id="queryByPaperNo" resultType="com.plotech.itsrvsys.pojo.entity.FloPaperRoute">
         SELECT SystemId,
                PaperNo,
                FlowId,
@@ -37,7 +37,7 @@
         FROM FLO_PaperRoute (NOLOCK)
         WHERE PaperNo = #{paperNo}
     </select>
-    <select id="queryByLogicPK" resultType="com.plotech.kanban.pojo.entity.FloPaperRoute">
+    <select id="queryByLogicPK" resultType="com.plotech.itsrvsys.pojo.entity.FloPaperRoute">
         SELECT *
         FROM FLO_PaperRoute (NOLOCK)
         WHERE SystemId = #{systemId}
@@ -45,12 +45,12 @@
           AND FlowId = #{flowId}
           AND SerialNo = #{serialNo}
     </select>
-    <select id="queryByFlowId" resultType="com.plotech.kanban.pojo.dto.FloConfig">
+    <select id="queryByFlowId" resultType="com.plotech.itsrvsys.pojo.dto.FloConfig">
         SELECT ServerName, DataBaseName
         FROM FLO_Config (NOLOCK)
         WHERE FlowId = #{flowId}
     </select>
-    <select id="querySpNameS" resultType="com.plotech.kanban.pojo.dto.FloStdRoute">
+    <select id="querySpNameS" resultType="com.plotech.itsrvsys.pojo.dto.FloStdRoute">
         SELECT ConfirmProcedure=ISNULL(t1.SPName_Confirm, ''), NonConfirmProcedure=ISNULL(t1.SPName_NonConfirm, '')
         FROM FLO_StdRoute t1 (NOLOCK),
              FLO_PaperRoute t2 (NOLOCK)
@@ -72,7 +72,7 @@
         FROM V_FLO_Stept_Final_SerialNo (NOLOCK)
         WHERE PaperNo = #{paperNo}
     </select>
-    <select id="querySpNameC" resultType="com.plotech.kanban.pojo.dto.FloConfig">
+    <select id="querySpNameC" resultType="com.plotech.itsrvsys.pojo.dto.FloConfig">
         SELECT ConfirmProcedure=ISNULL(SPName_Confirm, ''), NonConfirmProcedure=ISNULL(SPName_NonConfirm, '')
         FROM FLO_Config (NOLOCK)
         WHERE FlowId = #{flowId}
@@ -89,7 +89,7 @@
                                   #{confirmEmpId,mode=IN,jdbcType=VARCHAR},
                                   #{notes,mode=IN,jdbcType=VARCHAR})}
     </select>
-    <select id="callFloSearchNonConfirm" resultType="com.plotech.kanban.pojo.entity.FloSearchNonConfirm">
+    <select id="callFloSearchNonConfirm" resultType="com.plotech.itsrvsys.pojo.entity.FloSearchNonConfirm">
         {call FLO_Search_NonConfirm(#{empId,mode=IN,jdbcType=VARCHAR})}
     </select>
 </mapper>

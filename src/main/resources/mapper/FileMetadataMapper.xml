@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plotech.kanban.mapper.FileMetadataMapper">
 
-    <resultMap id="BaseResultMap" type="com.plotech.kanban.pojo.entity.FileMetadata">
+    <resultMap id="BaseResultMap" type="com.plotech.itsrvsys.pojo.entity.FileMetadata">
             <id property="id" column="ID" jdbcType="VARCHAR"/>
             <result property="originalFileName" column="OriginalFileName" jdbcType="VARCHAR"/>
             <result property="minIOUrl" column="MinIOUrl" jdbcType="VARCHAR"/>
@@ -16,7 +16,7 @@
     <update id="updateLastModifyDateById">
         UPDATE FileMetadata SET LastModifyDate = GETDATE() WHERE ID = #{id};
     </update>
-    <select id="getById" resultType="com.plotech.kanban.pojo.entity.FileMetadata">
+    <select id="getById" resultType="com.plotech.itsrvsys.pojo.entity.FileMetadata">
         SELECT ID, OriginalFileName, MinIOUrl, FileType, Uploader, BuildDate, LastModifyDate
         FROM FileMetadata
         WHERE ID = #{id};

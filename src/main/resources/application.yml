@@ -1,6 +1,6 @@
 spring:
   application:
-    name: kanban
+    name: itsrvsys
   datasource:
     dynamic:
       primary: mysql

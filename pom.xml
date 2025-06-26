@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.plotech</groupId>
-    <artifactId>kanban</artifactId>
+    <artifactId>itsrvsys</artifactId>
     <version>0.1.7</version>
-    <name>kanban</name>
-    <description>kanban</description>
+    <name>itsrvsys</name>
+    <description>itsrvsys</description>
     <url/>
     <licenses>
         <license/>
