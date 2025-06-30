@@ -2,6 +2,7 @@ package com.plotech.itsrvsys.controller;
 
 import com.plotech.itsrvsys.pojo.vo.R;
 import com.plotech.itsrvsys.pojo.vo.TransferDataRequest;
+import com.plotech.itsrvsys.pojo.vo.TransferDataWithTypeRequest;
 import com.plotech.itsrvsys.service.DataForwardService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +36,12 @@ public class DataForwardController {
     }
 
     @PostMapping("/approval")
-    public Object approvalCenter(@RequestBody TransferDataRequest requestData) {
-        HashMap<String, Object> data = dataForwardService.transferDataForApprovalCenterWithPage(requestData);
+    public Object approvalCenter(@RequestBody TransferDataWithTypeRequest requestData) {
+        requestData.setTargetType("com.plotech.itsrvsys.pojo.entity." + requestData.getTargetType());
+        HashMap<String, Object> data = dataForwardService.transferDataWithGeneric(requestData);
         return R.ok(data.get("data"))
-                .put("total", data.get("total"));
+                .put("total", data.get("total"))
+                .put("pageNo", data.get("pageNo"))
+                .put("pageSize", data.get("pageSize"));
     }
 }

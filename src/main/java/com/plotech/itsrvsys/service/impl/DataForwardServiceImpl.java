@@ -3,10 +3,11 @@ package com.plotech.itsrvsys.service.impl;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.plotech.itsrvsys.exception.CommonBaseErrorCode;
 import com.plotech.itsrvsys.exception.CommonBaseException;
-import com.plotech.itsrvsys.pojo.entity.PRptPre;
 import com.plotech.itsrvsys.pojo.vo.TransferDataRequest;
 import com.plotech.itsrvsys.pojo.vo.TransferDataResponse;
+import com.plotech.itsrvsys.pojo.vo.TransferDataWithTypeRequest;
 import com.plotech.itsrvsys.service.DataForwardService;
 import com.plotech.itsrvsys.util.SaltUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -100,30 +100,56 @@ public class DataForwardServiceImpl implements DataForwardService {
         }
     }
 
+    /**
+     * 通用的数据转发方法，支持动态指定响应数据类型
+     *
+     * @param requestData 请求参数
+     * @return 包含数据和总数的Map
+     */
     @Override
-    public HashMap<String, Object> transferDataForApprovalCenterWithPage(TransferDataRequest requestData) {
-        // 目标URL
+    public <T> HashMap<String, Object> transferDataWithGeneric(TransferDataWithTypeRequest requestData) {
         String targetUrl = getTargetUrl();
         HttpHeaders headers = new HttpHeaders();
-        // 设置请求头内容类型为JSON
         headers.setContentType(MediaType.valueOf("application/json;charset=UTF-8"));
-//        HashMap<String, Object> parameters = requestData.getParameters();
-//        int pageNo = (int) parameters.get("pageNo") - 1; // 第一页传1，改从0开始（作为下标），所以减1
-//        parameters.remove("pageNo");
-//        requestData.setParameters(parameters);
+
         HttpEntity<TransferDataRequest> httpEntity = new HttpEntity<>(requestData, headers);
         log.info("请求【{}】的请求体：【{}】", targetUrl, JSONObject.toJSONString(httpEntity));
+
         try {
-            // 发送POST请求并返回结果
             TransferDataResponse response = restTemplate.postForObject(targetUrl, httpEntity, TransferDataResponse.class);
-            log.info("请求【{}】返回的响应体：【{}】", targetUrl, JSONObject.toJSONString(response)); // 记录响应体到日志
-            assert response != null;
+            log.info("请求【{}】返回的响应体：【{}】", targetUrl, JSONObject.toJSONString(response));
+
             if ("OK".equals(response.getState())) {
-                List<PRptPre> fullList = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), new TypeReference<ArrayList<PRptPre>>() {
-                });
+                TypeReference<List<T>> typeReference;
+                try {
+                    String targetClassName = requestData.getTargetType();
+                    if (targetClassName == null || targetClassName.isEmpty()) {
+                        throw new CommonBaseException(CommonBaseErrorCode.NO_TARGET_TYPE_PARAM);
+                    }
+                    Class<?> targetClass = Class.forName(targetClassName);
+                    typeReference = new TypeReference<List<T>>(targetClass) {};
+                } catch (ClassNotFoundException e) {
+                    throw new CommonBaseException(CommonBaseErrorCode.NO_TARGET_TYPE_CLASS);
+                }
+                // 使用传入的typeReference来解析数据
+                List<T> fullList = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), typeReference);
+                int pageSize = requestData.getPageSize();
+                int pageNo = requestData.getPageNo();
+                int fromIndex = (pageNo - 1) * pageSize;
+                int toIndex = Math.min(fromIndex + pageSize, fullList.size());
+                if (fromIndex > toIndex) {
+                    log.warn("分页参数非法：fromIndex({}) > toIndex({})", fromIndex, toIndex);
+                    fromIndex = toIndex;
+                }
+                if (fromIndex >= fullList.size() || fromIndex < 0) {
+                    throw new CommonBaseException(CommonBaseErrorCode.PAGE_PARAM_ERROR);
+                }
+                List<T> pagedList = fullList.subList(fromIndex, toIndex);
                 HashMap<String, Object> result = new HashMap<>();
-                result.put("data", fullList);
+                result.put("data", pagedList);
                 result.put("total", fullList.size());
+                result.put("pageSize", pageSize);
+                result.put("pageNo", pageNo);
                 return result;
             } else {
                 throw new CommonBaseException(20000, response.getErrMsg());
@@ -132,4 +158,5 @@ public class DataForwardServiceImpl implements DataForwardService {
             throw new CommonBaseException(10000, e.getStatusText());
         }
     }
+
 }

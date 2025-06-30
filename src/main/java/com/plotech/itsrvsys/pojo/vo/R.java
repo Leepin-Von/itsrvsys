@@ -22,7 +22,7 @@ public class R<T> implements Serializable {
 
     private T data; // 返回数据
 
-    private Map<String, Object> map = new HashMap<>(); // 动态返回数据
+    private Map<String, Object> extra = new HashMap<>(); // 动态返回数据
 
     public R() {
     }
@@ -59,7 +59,7 @@ public class R<T> implements Serializable {
     }
 
     public R<T> put(String key, Object value) {
-        this.map.put(key, value);
+        this.extra.put(key, value);
         return this;
     }
 }

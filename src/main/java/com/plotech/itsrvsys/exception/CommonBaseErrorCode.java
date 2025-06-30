@@ -22,7 +22,11 @@ public enum CommonBaseErrorCode {
     SAVE_FAIL(40000, "插入数据失败，请联系系统管理员"),
     UPDATE_FAIL(40000, "更新数据失败，请联系系统管理员"),
     NO_PERMIT_EMPLOYEE(40000, "该单据无可签核的人员"),
-    NO_DATA(40000, "查无数据");
+    NO_DATA(40000, "查无数据"),
+    // 50000 - 本项目内的错误
+    NO_TARGET_TYPE_CLASS(50000, "目标类型类未找到"),
+    NO_TARGET_TYPE_PARAM(50000, "无目标类型参数，数据接收失败"),
+    PAGE_PARAM_ERROR(50000, "分页参数错误：fromIndex超出范围");
 
     private Integer code;
     private String errMsg;
