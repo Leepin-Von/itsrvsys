@@ -12,7 +12,7 @@
     <artifactId>itsrvsys</artifactId>
     <version>0.2.0</version>
     <name>itsrvsys</name>
-    <description>itsrvsys</description>
+    <description>An internal company project that serves employees.</description>
     <url/>
     <licenses>
         <license/>
