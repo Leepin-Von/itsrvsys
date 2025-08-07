@@ -59,7 +59,7 @@ public class RestTemplateConfig {
         // 设置与服务器连接的超时时间（毫秒）
         clientHttpRequestFactory.setConnectTimeout(5 * 1000);
         // 设置传递数据的超时时间（毫秒）
-        clientHttpRequestFactory.setReadTimeout(10 * 1000);
+        clientHttpRequestFactory.setReadTimeout(60 * 1000);
         // 设置从连接池中获取可用连接的超时时间（毫秒）
         clientHttpRequestFactory.setConnectionRequestTimeout(10 * 1000);
         return clientHttpRequestFactory;

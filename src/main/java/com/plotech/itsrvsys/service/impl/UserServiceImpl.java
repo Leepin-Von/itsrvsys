@@ -27,11 +27,11 @@ public class UserServiceImpl implements UserService {
      * RestTemplate实例，用于发送HTTP请求。
      */
     private final RestTemplate restTemplate;
-    @Value("${current.env}")
+    @Value("${com.plotech.current.env}")
     private String currentEnv;
-    @Value("${dev.api}")
+    @Value("${com.plotech.base.dev.api}")
     private String devApi;
-    @Value("${prod.api}")
+    @Value("${com.plotech.base.prod.api}")
     private String prodApi;
     private final SaltUtil saltUtil;
 

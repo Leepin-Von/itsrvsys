@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.plotech.itsrvsys.exception.CommonBaseErrorCode;
 import com.plotech.itsrvsys.exception.CommonBaseException;
+import com.plotech.itsrvsys.pojo.dto.PkgInfo;
+import com.plotech.itsrvsys.pojo.entity.QRCode;
 import com.plotech.itsrvsys.pojo.vo.TransferDataRequest;
 import com.plotech.itsrvsys.pojo.vo.TransferDataResponse;
 import com.plotech.itsrvsys.pojo.vo.TransferDataWithTypeRequest;
@@ -19,8 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,30 +36,37 @@ public class DataForwardServiceImpl implements DataForwardService {
      */
     private final RestTemplate restTemplate;
     private final SaltUtil saltUtil;
-    @Value("${current.env}")
+    @Value("${com.plotech.current.env}")
     private String currentEnv;
-    @Value("${dev.api}")
-    private String devApi;
-    @Value("${prod.api}")
-    private String prodApi;
+    @Value("${com.plotech.base.dev.api}")
+    private String baseDevApi;
+    @Value("${com.plotech.base.prod.api}")
+    private String baseProdApi;
+    @Value("${com.plotech.wms.dev.api}")
+    private String wmsDevApi;
+    @Value("${com.plotech.wms.prod.api}")
+    private String wmsProdApi;
 
     public DataForwardServiceImpl(RestTemplate restTemplate, SaltUtil saltUtil) {
         this.restTemplate = restTemplate;
         this.saltUtil = saltUtil;
     }
 
-    private String getTargetUrl() {
-        if ("dev".equalsIgnoreCase(currentEnv)) {
-            return devApi;
-        } else {
-            return prodApi;
+    private String getTargetUrl(String apiFor) {
+        switch (apiFor) {
+            case "base":
+                return "dev".equals(currentEnv) ? baseDevApi : baseProdApi;
+            case "wms":
+                return "dev".equals(currentEnv) ? wmsDevApi : wmsProdApi;
+            default:
+                throw new CommonBaseException(CommonBaseErrorCode.API_FOR_NOT_FOUND);
         }
     }
 
     @Override
-    public Object transferData(TransferDataRequest requestData) {
+    public Object transferData(TransferDataRequest requestData, String apiFor) {
         // 目标URL
-        String targetUrl = getTargetUrl();
+        String targetUrl = getTargetUrl(apiFor);
         HttpHeaders headers = new HttpHeaders();
         // 设置请求头内容类型为JSON
         headers.setContentType(MediaType.valueOf("application/json;charset=UTF-8"));
@@ -73,7 +85,7 @@ public class DataForwardServiceImpl implements DataForwardService {
     @Override
     public Object userChgPwd(TransferDataRequest requestData) {
         // 目标URL
-        String targetUrl = getTargetUrl();
+        String targetUrl = getTargetUrl("base");
         if ("UserChgPwd".equals(requestData.getDocType())) {
             HashMap<String, Object> parameters = requestData.getParameters();
             // 生成盐
@@ -107,8 +119,8 @@ public class DataForwardServiceImpl implements DataForwardService {
      * @return 包含数据和总数的Map
      */
     @Override
-    public <T> HashMap<String, Object> transferDataWithGeneric(TransferDataWithTypeRequest requestData) {
-        String targetUrl = getTargetUrl();
+    public <T> HashMap<String, Object> transferDataDynamic(TransferDataWithTypeRequest requestData, String apiFor) {
+        String targetUrl = getTargetUrl(apiFor);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("application/json;charset=UTF-8"));
 
@@ -127,7 +139,8 @@ public class DataForwardServiceImpl implements DataForwardService {
                         throw new CommonBaseException(CommonBaseErrorCode.NO_TARGET_TYPE_PARAM);
                     }
                     Class<?> targetClass = Class.forName(targetClassName);
-                    typeReference = new TypeReference<List<T>>(targetClass) {};
+                    typeReference = new TypeReference<List<T>>(targetClass) {
+                    };
                 } catch (ClassNotFoundException e) {
                     throw new CommonBaseException(CommonBaseErrorCode.NO_TARGET_TYPE_CLASS);
                 }
@@ -135,6 +148,14 @@ public class DataForwardServiceImpl implements DataForwardService {
                 List<T> fullList = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), typeReference);
                 int pageSize = requestData.getPageSize();
                 int pageNo = requestData.getPageNo();
+
+                // 如果没有指定分页参数，则返回所有数据
+                if (pageSize == 0 && pageNo == 0) {
+                    HashMap<String, Object> result = new HashMap<>();
+                    result.put("data", fullList);
+                    return result;
+                }
+
                 int fromIndex = (pageNo - 1) * pageSize;
                 int toIndex = Math.min(fromIndex + pageSize, fullList.size());
                 if (fromIndex > toIndex) {
@@ -156,6 +177,51 @@ public class DataForwardServiceImpl implements DataForwardService {
             }
         } catch (HttpServerErrorException e) {
             throw new CommonBaseException(10000, e.getStatusText());
+        }
+    }
+
+    @Override
+    public ArrayList<PkgInfo> getPkgInfo(ArrayList<QRCode> qrCodes) {
+        // 使用线程池并行处理多个 QRCode 请求
+        ExecutorService executorService = Executors.newFixedThreadPool(Math.min(qrCodes.size(), 10));
+        List<CompletableFuture<List<PkgInfo>>> futures = qrCodes.stream()
+                .map(qrCode -> CompletableFuture.supplyAsync(() -> fetchPkgInfoForQRCode(qrCode), executorService))
+                .collect(Collectors.toList());
+        
+        ArrayList<PkgInfo> pkgInfos = new ArrayList<>();
+        try {
+            for (CompletableFuture<List<PkgInfo>> future : futures) {
+                pkgInfos.addAll(future.get(60, TimeUnit.SECONDS)); // 每个请求最多等待60秒
+            }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            log.error("获取PkgInfo时发生错误", e);
+            throw new CommonBaseException(20000, "获取PkgInfo时发生错误: " + e.getMessage());
+        } finally {
+            executorService.shutdown();
+        }
+        
+        return pkgInfos;
+    }
+    
+    private List<PkgInfo> fetchPkgInfoForQRCode(QRCode qrCode) {
+        TransferDataRequest request = new TransferDataRequest();
+        request.setDocType("PkgInfo");
+        HashMap<String, Object> parameters = new HashMap<>();
+        parameters.put("PkgId", qrCode.getPackageId());
+        parameters.put("StockId","");
+        parameters.put("StoreHouse","");
+        parameters.put("MatCode","");
+        parameters.put("LotNum","");
+        parameters.put("PONum", "");
+        request.setParameters(parameters);
+        
+        TransferDataResponse data = (TransferDataResponse) transferData(request, "wms");
+        if("OK".equals(data.getState())) {
+            String jsonString = JSONObject.toJSONString(data.getData());
+            return JSONObject.parseObject(jsonString, new TypeReference<ArrayList<PkgInfo>>(){});
+        } else {
+            log.info("获取PkgInfo失败，错误信息：{}", data.getErrMsg());
+            throw new CommonBaseException(20000, data.getErrMsg());
         }
     }
 

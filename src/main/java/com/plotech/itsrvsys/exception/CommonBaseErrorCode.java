@@ -9,7 +9,8 @@ public enum CommonBaseErrorCode {
     USERNAME_ISNULL(10000, "用户名不能为空"),
     USER_PASSWORD_ERROR(10000, "用户名或密码错误"),
     USER_NOT_PERMISSION(10000, "用户无权限"),
-    // 20000 - 来自大哥的接口
+    // 20000 - 和大哥的接口相关
+    API_FOR_NOT_FOUND(20000, "未找到对应的接口配置"),
     // 30000 - MinIO 相关
     BUCKET_NOT_EXIST(30000, "该文件/文件夹（存储桶）不存在"),
     BUCKET_CREATE_FAIL(30000, "创建文件/文件夹（存储桶）失败"),
