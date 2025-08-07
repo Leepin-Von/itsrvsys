@@ -1,4 +1,4 @@
-package com.plotech.itsrvsys.pojo.entity;
+package com.plotech.itsrvsys.pojo.dto;
 
 import lombok.Data;
 

@@ -44,9 +44,9 @@ public class DataForwardController {
         return dataForwardService.userChgPwd(requestData);
     }
 
-    @PostMapping("/approval")
-    public R forApprovalCenter(@RequestBody TransferDataWithTypeRequest requestData) {
-        requestData.setTargetType("com.plotech.itsrvsys.pojo.entity." + requestData.getTargetType());
+    @PostMapping("/dynamicForward")
+    public R transferDataDynamic(@RequestBody TransferDataWithTypeRequest requestData) {
+        requestData.setTargetType("com.plotech.itsrvsys.pojo.dto." + requestData.getTargetType());
         HashMap<String, Object> data = dataForwardService.transferDataDynamic(requestData, "base");
         return R.ok(data.get("data"))
                 .put("total", data.get("total"))
@@ -54,8 +54,8 @@ public class DataForwardController {
                 .put("pageSize", data.get("pageSize"));
     }
 
-    @PostMapping("/turnStock")
-    public R forTurnStock(@RequestBody TransferDataWithTypeRequest requestData) {
+    @PostMapping("/wmsDynamicForward")
+    public R forApprovalCenter(@RequestBody TransferDataWithTypeRequest requestData) {
         requestData.setTargetType("com.plotech.itsrvsys.pojo.dto." + requestData.getTargetType());
         HashMap<String, Object> data = dataForwardService.transferDataDynamic(requestData, "wms");
         return R.ok(data.get("data"))
@@ -68,15 +68,5 @@ public class DataForwardController {
     public R getPkgInfo(@RequestBody ArrayList<QRCode> qrCodes) {
         ArrayList<PkgInfo> pkgInfo = dataForwardService.getPkgInfo(qrCodes);
         return R.ok(pkgInfo);
-    }
-
-    @PostMapping("/demense")
-    public R forDemense(@RequestBody TransferDataWithTypeRequest requestData) {
-        requestData.setTargetType("com.plotech.itsrvsys.pojo.entity." + requestData.getTargetType());
-        HashMap<String, Object> data = dataForwardService.transferDataDynamic(requestData, "wms");
-        return R.ok(data.get("data"))
-                .put("total", data.get("total"))
-                .put("pageNo", data.get("pageNo"))
-                .put("pageSize", data.get("pageSize"));
     }
 }

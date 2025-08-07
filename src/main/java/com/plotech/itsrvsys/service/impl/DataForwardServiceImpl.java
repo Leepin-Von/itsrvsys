@@ -182,22 +182,46 @@ public class DataForwardServiceImpl implements DataForwardService {
 
     @Override
     public ArrayList<PkgInfo> getPkgInfo(ArrayList<QRCode> qrCodes) {
+        // 输入验证
+        if (qrCodes == null || qrCodes.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
         // 使用线程池并行处理多个 QRCode 请求
-        ExecutorService executorService = Executors.newFixedThreadPool(Math.min(qrCodes.size(), 10));
+        ExecutorService executorService = new ThreadPoolExecutor(
+                Math.min(qrCodes.size(), 5),
+                Math.min(qrCodes.size(), 10),
+                60L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(100),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.CallerRunsPolicy());
+        
         List<CompletableFuture<List<PkgInfo>>> futures = qrCodes.stream()
                 .map(qrCode -> CompletableFuture.supplyAsync(() -> fetchPkgInfoForQRCode(qrCode), executorService))
                 .collect(Collectors.toList());
         
         ArrayList<PkgInfo> pkgInfos = new ArrayList<>();
         try {
-            for (CompletableFuture<List<PkgInfo>> future : futures) {
-                pkgInfos.addAll(future.get(60, TimeUnit.SECONDS)); // 每个请求最多等待60秒
+            for (int i = 0; i < futures.size(); i++) {
+                try {
+                    pkgInfos.addAll(futures.get(i).get(60, TimeUnit.SECONDS)); // 每个请求最多等待60秒
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    log.error("获取第{}个QRCode的PkgInfo时发生错误", i, e);
+                    // 即使某个请求失败，也继续处理其他请求
+                    throw new CommonBaseException(20000, "获取第" + (i+1) + "个PkgInfo时发生错误: " + e.getMessage());
+                }
             }
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            log.error("获取PkgInfo时发生错误", e);
-            throw new CommonBaseException(20000, "获取PkgInfo时发生错误: " + e.getMessage());
         } finally {
             executorService.shutdown();
+            try {
+                // 等待线程池中的任务完成
+                if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
         
         return pkgInfos;
